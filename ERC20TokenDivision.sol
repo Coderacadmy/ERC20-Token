@@ -7,18 +7,17 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
 contract MyToken is ERC20, ERC20Burnable, Ownable {
-    
     using SafeMath for uint256;
 
     constructor() ERC20("MyToken", "MTK") {
-        _mint(msg.sender, 2000000000 * 10 ** decimals());
+        _mint(msg.sender, 0 * 10 ** decimals());
     }
+    
+    uint256 public altSupply = 2000000000;
 
    // Total Supplies of Token
-    uint256 public circularSupply = totalSupply().div(100).mul(60);
-    uint256 public privateSupply = totalSupply().div(100).mul(40);
-    
- //   uint256 public privateSupply = SafeMath.mul(SafeMath.div(totalSupply(),100),40);
+    uint256 public circularSupply = altSupply.div(100).mul(60);
+    uint256 public privateSupply = altSupply.div(100).mul(40);
     
     // Token Distribution
     uint256 public investorsPercentage  = circularSupply.div(100).mul(40);
@@ -40,14 +39,6 @@ contract MyToken is ERC20, ERC20Burnable, Ownable {
         circularSupply = SafeMath.sub(circularSupply,values[i]);
         _mint(recipients[i], values[i]); 
     }
-  } 
-
-    // function CirculationSupply(address to, uint256 amount) public onlyOwner {
-        
-    // }
-    
-    // function PrivateSupply() public {
-        
-    // }
+   } 
     
 }
