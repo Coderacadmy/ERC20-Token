@@ -19,7 +19,7 @@ contract MyToken is ERC20, ERC20Burnable, Ownable {
     uint256 public circularSupply = altSupply.div(100).mul(60);
     uint256 public privateSupply  = altSupply.div(100).mul(40);
     
-    // Token Distribution
+    // Token Distribution of Circular Supply
     uint256 public _investorsSupply  = circularSupply.div(100).mul(40);
     uint256 public _rewardsSupply    = circularSupply.div(100).mul(30);
     uint256 public _artistsSupply    = circularSupply.div(100).mul(15);   
@@ -47,6 +47,7 @@ contract MyToken is ERC20, ERC20Burnable, Ownable {
       for (uint256 i = 0; i < recipients.length; i++) {
         values[i] = SafeMath.mul(values[i], 1 ether);
         require(privateSupply > values[i], 'Private Supply is less then the values');
+        
         _mint(recipients[i], values[i]); 
         privateSupply = privateSupply.sub(values[i]);
         altSupply = altSupply.sub(values[i]);
@@ -58,27 +59,30 @@ contract MyToken is ERC20, ERC20Burnable, Ownable {
     /////////////////////////////////////////////////////////////////////////
     // Transfer Circular Supply
     /////////////////////////////////////////////////////////////////////////  
-    function transferCircularSupply(address[] memory recipients, uint256[] memory values) public onlyOwner {
-      for (uint256 i = 0; i < recipients.length; i++) {
-        values[i] = values[i].mul(1 ether);
-        require(circularSupply > values[i], 'Circular Supply is less then the values');
-        _mint(recipients[i], values[i]); 
-        circularSupply = circularSupply.sub(values[i]);
-        altSupply = altSupply.sub(values[i]);
-     }
     
-    }
+    // function transferCircularSupply(address[] memory recipients, uint256[] memory values) public onlyOwner {
+    //   for (uint256 i = 0; i < recipients.length; i++) {
+    //     values[i] = values[i].mul(1 ether);
+    //     require(circularSupply > values[i], 'Circular Supply is less then the values');
+    //     _mint(recipients[i], values[i]); 
+    //     circularSupply = circularSupply.sub(values[i]);
+    //     altSupply = altSupply.sub(values[i]);
+    //  }
+    
+    // }
     
     
     ////////////////////////////////////////////////////////////////////////
     //  transfer Inverstor supply
     /////////////////////////////////////////////////////////////////////////
-    function transferInvestorSupply(address[] memory recipients, uint256[] memory values) public onlyOwner {
+    function transferInvestorSupply(address[] memory recipients, uint256[] memory values) public {
       for (uint256 i = 0; i < recipients.length; i++) {
         values[i] = values[i].mul(1 ether);
         require(_investorsSupply > values[i], 'Investors Supply is less then the values');
+        
         _mint(recipients[i], values[i]); 
         _investorsSupply = _investorsSupply.sub(values[i]);
+        circularSupply = circularSupply.sub(values[i]);
         altSupply = altSupply.sub(values[i]);
      }
     
@@ -92,8 +96,10 @@ contract MyToken is ERC20, ERC20Burnable, Ownable {
       for (uint256 i = 0; i < recipients.length; i++) {
         values[i] = values[i].mul(1 ether);
         require(_rewardsSupply > values[i], 'Reward Supply is less then the values');
+        
         _mint(recipients[i], values[i]); 
         _rewardsSupply = _rewardsSupply.sub(values[i]);
+        circularSupply = circularSupply.sub(values[i]);
         altSupply = altSupply.sub(values[i]);
      }
     
@@ -107,8 +113,10 @@ contract MyToken is ERC20, ERC20Burnable, Ownable {
       for (uint256 i = 0; i < recipients.length; i++) {
         values[i] = values[i].mul(1 ether);
         require(_artistsSupply > values[i], 'Artists Supply is less then the values');
+        
         _mint(recipients[i], values[i]); 
         _artistsSupply = _artistsSupply.sub(values[i]);
+        circularSupply = circularSupply.sub(values[i]);
         altSupply = altSupply.sub(values[i]);
      }
     
@@ -122,8 +130,10 @@ contract MyToken is ERC20, ERC20Burnable, Ownable {
       for (uint256 i = 0; i < recipients.length; i++) {
         values[i] = values[i].mul(1 ether);
         require(_foundersSupply > values[i], 'Founders Supply is less then the values');
+        
         _mint(recipients[i], values[i]); 
         _foundersSupply = _foundersSupply.sub(values[i]);
+        circularSupply = circularSupply.sub(values[i]);
         altSupply = altSupply.sub(values[i]);
      }
     
@@ -139,8 +149,29 @@ contract MyToken is ERC20, ERC20Burnable, Ownable {
         require(_developersSupply > values[i], 'Developers Supply is less then the values');
         _mint(recipients[i], values[i]); 
         _developersSupply = _developersSupply.sub(values[i]);
+        circularSupply = circularSupply.sub(values[i]);
         altSupply = altSupply.sub(values[i]);
      }
     
     }
+    
+    function _burn(address account, uint256 amount) internal override {
+        require(account != address(0), "ERC20: burn from the zero address");
+
+        _investorsSupply= _investorsSupply.sub(amount, "ERC20: burn amount exceeds balance");
+        circularSupply = circularSupply.sub(amount);
+        altSupply = altSupply.sub(amount);
+        emit Transfer(account, address(0), amount);
+    }
+    
+    function burnFoundersToken(address account, uint256 amount) public {
+        require (account != address(0), "ERC20: Founders burn from zero addresss");
+        
+        _foundersSupply = _foundersSupply.sub(amount, "ERC20: Founders burn amount exceeds balance");
+        circularSupply = circularSupply.sub(amount);
+        altSupply = altSupply.sub(amount);
+        emit Transfer(account, address(0), amount);
+        
+    }
+
 }
