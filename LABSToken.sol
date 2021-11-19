@@ -9,7 +9,7 @@ import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 contract LABS is ERC20, ERC20Burnable, Ownable {
     using SafeMath for uint256;
 
-    constructor() ERC20("LABS", "LB") {
+    constructor() ERC20("LABS", "MLBS") {
      //   _mint(msg.sender, 0 * 10 ** decimals());
     }
     
