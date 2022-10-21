@@ -78,5 +78,5 @@ emit Transfer(_from, _to, _amount);
 // emit Approve
 emit Approval(_from, msg.sender, _amount);
 
-
+ }
 }
